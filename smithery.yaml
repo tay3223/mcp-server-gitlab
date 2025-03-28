@@ -1,3 +1,4 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
 startCommand:
   type: stdio
   configSchema:
@@ -24,22 +25,19 @@ startCommand:
         default: "info"
     required: ["gitlabUrl", "gitlabToken"]
   commandFunction: |
-    function(config) {
-      const env = {
+    config => ({
+      command: "node",
+      args: ["src/index.js"],
+      env: {
         "GITLAB_URL": config.gitlabUrl,
         "GITLAB_TOKEN": config.gitlabToken,
         "GITLAB_API_VERSION": config.gitlabApiVersion || "v4",
         "PORT": config.port ? config.port.toString() : "3000",
         "LOG_LEVEL": config.logLevel || "info",
-        "NODE_ENV": "production"
-      };
-      
-      return {
-        command: "node",
-        args: ["src/index.js"],
-        env: env
-      };
-    }
+        "NODE_ENV": "production",
+        "SMITHERY": "true"
+      }
+    })
 build:
   dockerfile: "Dockerfile"
   dockerBuildPath: "."
