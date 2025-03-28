@@ -15,15 +15,31 @@
 
 ## 部署说明
 
-此MCP服务器是一个独立的Node.js应用程序，需要部署在您自己的服务器上，而不是GitHub上。它作为GitLab的中间层，为您的应用程序提供API接口，同时可以进行自定义的业务逻辑处理。
+此MCP服务器是一个独立的Node.js应用程序，可以部署在多种环境中。它作为GitLab的中间层，为您的应用程序提供API接口，同时可以进行自定义的业务逻辑处理。
 
 详细的部署指南请参阅 [DEPLOYMENT.md](./DEPLOYMENT.md)。
 
 ### 部署选项
 
-1. **自托管服务器**：在您自己的物理服务器或云服务器（如AWS EC2、阿里云ECS等）上部署
-2. **容器化部署**：使用Docker容器部署
-3. **平台即服务(PaaS)**：如Heroku、Vercel等平台
+1. **Smithery平台部署**：作为MCP（Master Control Program）服务部署到Smithery平台
+2. **自托管服务器**：在您自己的物理服务器或云服务器（如AWS EC2、阿里云ECS等）上部署
+3. **容器化部署**：使用Docker容器部署
+4. **平台即服务(PaaS)**：如Heroku、Vercel等平台
+
+## Smithery部署
+
+本仓库包含了部署到Smithery平台所需的配置文件：
+
+1. `smithery.yaml`：定义服务启动配置和参数
+2. `Dockerfile`：定义如何构建服务容器
+
+部署步骤：
+
+1. Fork或克隆此仓库到您的GitHub账户
+2. 在[Smithery平台](https://smithery.ai/)上注册并连接您的GitHub账户
+3. 创建新的MCP服务并选择此仓库
+4. 在配置中填写您的GitLab服务器URL和访问令牌
+5. 完成部署
 
 ## 环境准备
 
@@ -148,6 +164,7 @@ docker-compose up -d
 - `src/services/gitlab.js` - 添加新的GitLab API交互方法
 - `src/routes/api.js` - 添加新的API端点
 - `config/config.js` - 修改配置选项
+- `smithery.yaml` - 修改Smithery平台配置选项
 
 ## 安全性建议
 
@@ -158,6 +175,17 @@ docker-compose up -d
 5. 在生产环境中使用反向代理（如Nginx）保护服务器
 
 ## 常见问题
+
+### 如何在Smithery平台上部署？
+
+Smithery是一个专门用于部署MCP（Master Control Program）服务的平台。要部署到Smithery：
+
+1. 确保您的仓库包含`smithery.yaml`和`Dockerfile`文件
+2. 在Smithery平台上创建账户并连接GitHub
+3. 创建新服务并选择此仓库
+4. 按照平台提示完成配置
+
+更多信息请参考[Smithery文档](https://smithery.ai/docs/config)。
 
 ### 为什么不部署在GitHub上？
 

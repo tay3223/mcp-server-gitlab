@@ -13,8 +13,11 @@ RUN mkdir -p logs
 # 拷贝应用程序代码
 COPY . .
 
-# 暴露端口
+# 暴露端口（仅作为文档用途）
 EXPOSE 3000
 
-# 运行应用
+# 设置标准输入/输出通信所需的环境变量
+ENV NODE_ENV=production
+
+# 启动应用 - 使用node直接运行，不添加其他参数，Smithery会通过STDIO通信
 CMD ["node", "src/index.js"] 

@@ -11,6 +11,23 @@ MCP（Master Control Program）服务器是一个中间层服务，它作为您�
 
 ## 部署位置
 
+### Smithery平台 (推荐)
+
+[Smithery](https://smithery.ai/) 是一个专为托管和部署MCP服务而设计的平台。这是部署本服务的推荐方式，因为：
+
+1. 专为MCP服务设计，提供标准化接口
+2. 简化部署流程，提供版本控制
+3. 内置监控和日志功能
+4. 可与多种AI应用直接集成
+
+#### 在Smithery上部署
+
+1. 确保您的仓库包含`smithery.yaml`和`Dockerfile`
+2. 在Smithery平台创建账户并连接GitHub
+3. 创建新服务并选择此仓库
+4. 配置必要的环境变量（GitLab URL和Token）
+5. 完成部署流程
+
 ### MCP服务器不应该部署在GitHub上
 
 GitHub是一个代码托管平台，不是应用服务器。您不能在GitHub上运行持续服务的服务器应用程序。GitHub可以：
@@ -20,9 +37,9 @@ GitHub是一个代码托管平台，不是应用服务器。您不能在GitHub�
 
 但它不能用于部署需要持续运行的服务器应用程序。
 
-### 正确的部署选项
+### 其他部署选项
 
-MCP服务器应该部署在以下位置之一：
+除了Smithery平台外，MCP服务器还可以部署在以下位置之一：
 
 #### 1. 自托管服务器
 
@@ -57,6 +74,11 @@ MCP服务器应该部署在以下位置之一：
 
 ## 推荐配置
 
+### Smithery部署
+
+- 按照Smithery平台推荐的配置进行设置
+- 使用平台提供的监控和日志工具
+
 ### 开发/测试环境
 
 - Docker容器部署在开发者本地机器或测试服务器上
@@ -85,6 +107,29 @@ MCP服务器应该部署在以下位置之一：
 4. 遵循最小权限原则配置GitLab令牌
 5. 配置防火墙仅允许必要的流量
 
+## Smithery配置说明
+
+### smithery.yaml
+
+本仓库包含的`smithery.yaml`文件定义了服务的配置选项：
+
+```yaml
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      gitlabUrl:
+        type: string
+        description: "您的GitLab服务器URL"
+      gitlabToken:
+        type: string
+        description: "GitLab API访问令牌"
+      # ... 其他配置选项
+```
+
+这些配置选项将在Smithery平台上显示为表单，用户可以填写自己的GitLab服务器信息。
+
 ## 总结
 
-MCP服务器是一个需要持续运行的应用程序，应部署在传统的服务器、容器平台或PaaS平台上，而不是代码托管平台如GitHub上。最佳部署位置取决于您的具体需求、资源和技术环境。 
+MCP服务器是一个需要持续运行的应用程序，推荐部署在Smithery平台上以获得最佳的兼容性和集成体验。如果有特殊需求，也可以部署在传统的服务器、容器平台或PaaS平台上。最佳部署位置取决于您的具体需求、资源和技术环境。 
