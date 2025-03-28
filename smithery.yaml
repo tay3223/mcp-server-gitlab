@@ -1,0 +1,37 @@
+# Smithery配置文件
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - gitlabUrl
+      - gitlabToken
+    properties:
+      gitlabUrl:
+        type: string
+        description: "GitLab服务器URL"
+      gitlabToken:
+        type: string
+        description: "GitLab API访问令牌"
+      gitlabApiVersion:
+        type: string
+        description: "GitLab API版本"
+        default: "v4"
+      logLevel:
+        type: string
+        enum: ["error", "warn", "info", "debug", "verbose"]
+        description: "日志级别"
+        default: "info"
+  commandFunction: |
+    config => ({
+      command: "node",
+      args: ["src/index.js"],
+      env: {
+        NODE_ENV: "production",
+        MCP_MODE: "true",
+        GITLAB_URL: config.gitlabUrl,
+        GITLAB_TOKEN: config.gitlabToken,
+        GITLAB_API_VERSION: config.gitlabApiVersion || "v4",
+        LOG_LEVEL: config.logLevel || "info"
+      }
+    })
