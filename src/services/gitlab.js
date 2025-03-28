@@ -2,11 +2,27 @@ const { Gitlab } = require('gitlab');
 const config = require('../../config/config');
 const logger = require('../../config/logger');
 
+// 检查GitLab配置
+if (!config.gitlab.url) {
+  logger.warn('GitLab URL未配置，API可能无法正常工作');
+}
+
+if (!config.gitlab.token) {
+  logger.warn('GitLab token未配置，API可能无法正常工作');
+}
+
 // 创建GitLab客户端实例
-const gitlab = new Gitlab({
+const gitlabConfig = {
   host: config.gitlab.url,
   token: config.gitlab.token
-});
+};
+
+// 如果配置了自定义API版本，添加到配置中
+if (config.gitlab.apiVersion) {
+  gitlabConfig.apiVersion = config.gitlab.apiVersion;
+}
+
+const gitlab = new Gitlab(gitlabConfig);
 
 /**
  * GitLab服务类，提供与GitLab交互的方法
@@ -29,7 +45,7 @@ class GitlabService {
 
   /**
    * 获取特定项目
-   * @param {number} projectId - 项目ID
+   * @param {number|string} projectId - 项目ID
    * @returns {Promise<Object>} 项目信息
    */
   async getProject(projectId) {
@@ -44,13 +60,17 @@ class GitlabService {
 
   /**
    * 获取项目仓库文件
-   * @param {number} projectId - 项目ID
+   * @param {number|string} projectId - 项目ID
    * @param {string} filePath - 文件路径
    * @param {string} ref - 分支/标签
    * @returns {Promise<Object>} 文件内容
    */
   async getRepositoryFile(projectId, filePath, ref = 'main') {
     try {
+      if (!filePath) {
+        throw new Error('filePath参数不能为空');
+      }
+      
       logger.info(`Fetching file ${filePath} from project ${projectId}`);
       return await gitlab.RepositoryFiles.show(projectId, filePath, ref);
     } catch (error) {
@@ -61,7 +81,7 @@ class GitlabService {
 
   /**
    * 获取项目的提交历史
-   * @param {number} projectId - 项目ID
+   * @param {number|string} projectId - 项目ID
    * @param {Object} options - 查询选项
    * @returns {Promise<Array>} 提交历史
    */
@@ -77,7 +97,7 @@ class GitlabService {
 
   /**
    * 获取合并请求列表
-   * @param {number} projectId - 项目ID
+   * @param {number|string} projectId - 项目ID
    * @param {Object} options - 查询选项
    * @returns {Promise<Array>} 合并请求列表
    */
